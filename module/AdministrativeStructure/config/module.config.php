@@ -49,9 +49,10 @@ return [
                     'documents' => [
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/documents[/:action]',
+                            'route' => '/documents[/:action[/:id]]',
                             'contraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'=> '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'AdministrativeStructure\Controller\Documents',
@@ -216,6 +217,17 @@ return [
                         'resource' => 'AdministrativeStructure\Controller\Documents',
                         'privilege' => 'index',
                         'icon' => 'fa fa-file-text-o',
+                        'toolbar' => [
+                            [
+                                'url' => '/administrative-structure/documents/terminationTerm/$id',
+                                'title' => 'Termo de Rescisão',
+                                'description' => 'Termo de rescisão de trabalho voluntário',
+                                'class' => 'fa fa-file-text bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ],
+                            // outros documentos ...
+                        ],
                     ],
                 ],
             ],

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2017 Márcio Dias <marciojr91@gmail.com>
  *
@@ -18,6 +19,7 @@
 
 namespace AdministrativeStructure\Controller;
 
+use AdministrativeStructure\Model\PdfTerminationTerm;
 use Database\Controller\AbstractEntityActionController;
 use Exception;
 use Recruitment\Entity\Recruitment;
@@ -31,23 +33,21 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class DocumentsController extends AbstractEntityActionController
-{
+class DocumentsController extends AbstractEntityActionController {
 
-    public function indexAction()
-    {
+    public function indexAction() {
         try {
             $em = $this->getEntityManager();
 
             $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
 
             $form
-                ->get('recruitment')
-                ->setValue(Recruitment::ALL_VOLUNTEER_RECRUITMENTS);
+                    ->get('recruitment')
+                    ->setValue(Recruitment::ALL_VOLUNTEER_RECRUITMENTS);
             $form
-                ->get('registrationStatus')
-                ->setValueOptions([RecruitmentStatus::STATUSTYPE_VOLUNTEER => RecruitmentStatus::STATUSTYPEDESC_VOLUNTEER])
-                ->setValue(RecruitmentStatus::STATUSTYPE_VOLUNTEER);
+                    ->get('registrationStatus')
+                    ->setValueOptions([RecruitmentStatus::STATUSTYPE_VOLUNTEER => RecruitmentStatus::STATUSTYPEDESC_VOLUNTEER])
+                    ->setValue(RecruitmentStatus::STATUSTYPE_VOLUNTEER);
 
             return new ViewModel(array(
                 'message' => null,
@@ -60,4 +60,35 @@ class DocumentsController extends AbstractEntityActionController
             ));
         }
     }
+
+    public function terminationTermAction() {
+
+        try {
+
+            $id = $this->params('id', false);
+            $em = $this->getEntityManager();
+            $vArr = [];
+            
+            $reg = $em->find('Recruitment\Entity\Registration', $id);
+            $person = $reg->getPerson();
+            
+            $vArr[] = [
+                'id' => $id,
+                'nome' => $person->getPersonName(),
+                'rg' => $person->getPersonRg(),
+                'cpf' => $person->getPersonCpf(),
+                'bYear' => $reg->getRegistrationDate('Y'),
+                'tYear' => date('Y'),
+            ];
+            
+            $pdf = new PdfTerminationTerm($vArr);
+
+            return new ViewModel([
+                'pdf' => $pdf,
+            ]);
+        } catch (\Exception $ex) {
+            
+        }
+    }
+
 }

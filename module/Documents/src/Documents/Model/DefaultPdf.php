@@ -20,8 +20,14 @@ class DefaultPdf extends FPDF
 
     const BASE_PATH = __DIR__;
     
-    public function Header()
+    private $email = 'catsensino@gmail.com';
+
+    public function setEmail($email) 
     {
+        $this->email = $email;
+    }
+
+    public function Header() {
         $this->SetXY(5, 5);
         // Logo
         $this->Image(self::BASE_PATH . '/../../../../../public/img'
@@ -37,21 +43,20 @@ class DefaultPdf extends FPDF
         // Move to the right
         $this->Cell(35);
         $this->Cell(100, 6, utf8_decode('Av. BPS, 1303 - UNIFEI '
-                . '- Campus Professor J. R. Seabra - Sala I.1.2.47 - Itajubá '
-                . '- MG'), 0, 1);
+                        . '- Campus Professor J. R. Seabra - Sala I.1.2.47 - Itajubá '
+                        . '- MG'), 0, 1);
         // Move to the right
         $this->Cell(35);
         $this->Cell(100, 6, utf8_decode('Tel.: (35) 98856-1340 | '
-                . 'E-mail: catsensino@gmail.com | '
-                . 'Site: http://www.familiacats.com.br'), 0, 1);
+                        . 'E-mail: ' . $this->email . ' | '
+                        . 'Site: http://www.familiacats.com.br'), 0, 1);
         // Line break
         $this->Ln(20);
         $this->Line(5, 23, 205, 23);
         $this->SetXY(5, 26);
     }
 
-    public function Footer()
-    {
+    public function Footer() {
         // Position at 1.5 cm from bottom
         $this->SetY(-15);
         // Arial 12
